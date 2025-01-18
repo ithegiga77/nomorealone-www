@@ -1,0 +1,9 @@
+[{
+  "_id": {
+    "$oid": "678c3286aa5ad4384eabb21c"
+  },
+  "name": "ExampleName",
+  "surname": "ExampleSurname",
+  "login": "temp",
+  "password": "$2b$10$haKMJXrSbPNhO0s8hYFyGOalfPBar7Z8Tmi0h2Zc1KzrG4iAnM8dm"
+}]

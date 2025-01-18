@@ -1,0 +1,27 @@
+{
+  "name": "koniec-kwaratanny-www",
+  "version": "1.0.0",
+  "description": "Oliwier Krypczyk 18.01.2025: soon powstanie struktura",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ithegiga77/koniec-kwaratanny-www.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ithegiga77/koniec-kwaratanny-www/issues"
+  },
+  "homepage": "https://github.com/ithegiga77/koniec-kwaratanny-www#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.9.5",
+    "nodemon": "^3.1.9"
+  }
+}
