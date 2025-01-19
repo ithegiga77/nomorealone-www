@@ -9,8 +9,8 @@ Jesli chodzi o mongodb, to baza to koniec-kwarantanny i dwie kolekcje sa jako pl
 # Instalacja
 Rozpakujcie lub sklonujcie projekt z githuba, wszystkie zaleznosci z node sa juz zainstalowane, wystrczy sam node.
 zrobcie plik **.env** i zrobcie dwie zmienne, cos takiego:
-`MONGODB_URI="mongodb://localhost:27017/koniec-kwarantanny"` - przykladowy URL do mongodb
-`SESSION_SECRET="jakissekretsewpiszcie"` - sekret do cookies
+<br>`MONGODB_URI="mongodb://localhost:27017/koniec-kwarantanny"` - przykladowy URL do mongodb
+<br>`SESSION_SECRET="jakissekretsewpiszcie"` - sekret do cookies
 
 potem tylko zeby odpalic to ``node .``
 
