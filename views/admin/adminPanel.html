@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koniec Kwarantanny</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        h2{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Panel administratora</h2>
+
+    <div id="adminInfo">
+        <h4 style="text-align: center;">Dane administratora</h4>
+        <p id="adminName" >Imie: xxx</p>
+        <p id="adminSurname" >Nazwisko: xxx</p>
+        <p id="adminLogin" >Login: xxx</p>
+    </div>
+    <div id="createArticle">
+        <form method="POST" action="/createArticle">
+            Tytuł artykułu: <input type="text" name="articleTitle" maxlength="40" size="40" placeholder="Tytuł artykułu"/> <br />
+            Treść artkułu: <textarea name="articleDescription" rows="20" cols="60" placeholder="Treść artykułu"></textarea> <br />
+            <input type="submit" value="Utwórz artykuł" />
+        </form>
+    </div>
+    <script src="adminHandler.js"></script>
+</body>
+</html>

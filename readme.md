@@ -1,5 +1,9 @@
-Zrobilem system logowania do konta administratora ktory przekierowywuje do admin panelu (ktory nie jest jeszcze zrobiony),
-rano popracuje nad ogarnianiem funkcji admin panelu itp itd. api tez jest gotowe i proste odbieranie go w JS. 
+Nowy update, zrobiony panel admina z opcja dodawania nowych artykulow. Jak chodzi o frontend to tylko w sumie
+zmienilem kolor na czarny zeby nie razil mnie w oczy wiec to juz zostawiam dla was. Oliwier potem ogarnie zabezpieczenia
+api bo już rozmawiałem z nim o tym wiec tym sie nie trzeba przejmowac. Jak bedziecie potrzebowac cos zmienic czy cos to zmieniajcie,
+tylko zeby potem dzialalo. najlepiej tylko nie zmieniajcie pliku node'a (index.js) ale jak bedzie trzeba to tez to zmiencie i tyle.
+
+Jesli chodzi o mongodb, to baza to koniec-kwarantanny i dwie kolekcje sa jako pliki JSON do importu
 
 
 # Instalacja
