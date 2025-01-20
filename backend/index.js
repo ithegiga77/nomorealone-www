@@ -1,25 +1,30 @@
-const express = require('express');
-const session = require('express-session');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
-const bcrypt = require('bcrypt');
+import express from 'express';
+import session from 'express-session';
+import mongoose from 'mongoose';
+import 'dotenv/config'
+import bcrypt from 'bcrypt';
+import { randomBytes } from 'node:crypto';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 
 const app = express();
 const port = 3001; //Set this port to whatever you like, it doesn't have to be that
 
-const Admin = require('./models/Admin.js');
-const Article = require('./models/Article.js');
+import Admin from './models/Admin.js';
+import Article from './models/Article.js';
+
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || require('crypto').randomBytes(64).toString('hex'),
+    secret: process.env.SESSION_SECRET || randomBytes(64).toString('hex'),
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60 * 60 * 1000 },
     httpOnly: true
 }));
 
-app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -135,6 +140,9 @@ app.get("/api/getArticle/:id", async (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile('./views/index.html', { root: __dirname });
 })
+
+app.use('/static', express.static(path.join(__dirname, 'public')))
+
 app.get('/article', (req, res) => {
     res.sendFile('./views/article.html', { root: __dirname });
 })
