@@ -1,19 +1,18 @@
-Nowy update, zrobiony panel admina z opcja dodawania nowych artykulow. Jak chodzi o frontend to tylko w sumie
-zmienilem kolor na czarny zeby nie razil mnie w oczy wiec to juz zostawiam dla was. Oliwier potem ogarnie zabezpieczenia
-api bo już rozmawiałem z nim o tym wiec tym sie nie trzeba przejmowac. Jak bedziecie potrzebowac cos zmienic czy cos to zmieniajcie,
-tylko zeby potem dzialalo. najlepiej tylko nie zmieniajcie pliku node'a (index.js) ale jak bedzie trzeba to tez to zmiencie i tyle.
+# Koniec Kwarantanny
 
-Jesli chodzi o mongodb, to baza to koniec-kwarantanny i dwie kolekcje sa jako pliki JSON do importu
+## Instalacja
+```bash
+npm i
+```
 
+Zmień plik `.env.example` na `.env` i ustaw `SESSION_SECRET` *(np. na losowy string 64 bajtowy)* 
 
-# Instalacja
-Rozpakujcie lub sklonujcie projekt z githuba, wszystkie zaleznosci z node sa juz zainstalowane, wystrczy sam node.
-zrobcie plik **.env** i zrobcie dwie zmienne, cos takiego:
-<br>`MONGODB_URI="mongodb://localhost:27017/koniec-kwarantanny"` - przykladowy URL do mongodb
-<br>`SESSION_SECRET="jakissekretsewpiszcie"` - sekret do cookies
+## Development
+Podczas Developmentu potrzebujesz zainstalowanego lokalnie [MongoDB](https://www.mongodb.com/try/download/community).
 
-potem tylko zeby odpalic to ``node .``
+Włącz serwer wpisując 
+```bash 
+npm run dev
+```
 
-
-
-Zycze powodzenia w pracy, Mateusz S
+Przy piewszym uruchomieniu pojawi ci się baza danych `koniec-kwarantanny` i wrzuć tymczasowe dane do `admins` i `articles`

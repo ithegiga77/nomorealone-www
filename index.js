@@ -12,12 +12,12 @@ const Admin = require('./models/Admin.js');
 const Article = require('./models/Article.js');
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'defaultSecret',
+    secret: process.env.SESSION_SECRET || require('crypto').randomBytes(64).toString('hex'),
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60 * 60 * 1000 },
     httpOnly: true
-  }));
+}));
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -44,6 +44,7 @@ app.post("/adminLogin", async (req, res) => {
         }
 
         const admin = await Admin.findOne({ login });
+
         if (!admin) {
             return res.status(400).json({ message: "Incorrect login!" });
         }
@@ -64,10 +65,10 @@ app.post("/adminLogin", async (req, res) => {
     }
 });
 
-app.post("/createArticle", async (req,res) => {
-    const {articleTitle, articleDescription} = req.body;
+app.post("/createArticle", async (req, res) => {
+    const { articleTitle, articleDescription } = req.body;
 
-    try{
+    try {
         const newArticle = new Article({
             title: articleTitle,
             description: articleDescription,
@@ -76,8 +77,8 @@ app.post("/createArticle", async (req,res) => {
 
         await newArticle.save();
         return newArticle;
-    } catch (err){
-        console.error('Error',err);
+    } catch (err) {
+        console.error('Error', err);
     }
 })
 
@@ -104,48 +105,48 @@ app.get("/api/adminData", (req, res) => {
 
 app.get("/api/loadArticles", async (req, res) => {
     try {
-      const articles = await Article.find();
-      const groupedArticles = [];
-  
-      for (let i = 0; i < articles.length; i += 25) {
-        groupedArticles.push(articles.slice(i, i + 25));
-      }
-  
-      res.json(groupedArticles);
+        const articles = await Article.find();
+        const groupedArticles = [];
+
+        for (let i = 0; i < articles.length; i += 25) {
+            groupedArticles.push(articles.slice(i, i + 25));
+        }
+
+        res.json(groupedArticles);
     } catch (error) {
-      res.status(500).json({ error: 'Błąd podczas pobierania artykułów' });
+        res.status(500).json({ error: 'Błąd podczas pobierania artykułów' });
     }
-  });
+});
 app.get("/api/getArticle/:id", async (req, res) => {
     const articleId = req.params.id;
 
-    try{
+    try {
         const article = await Article.findById(articleId);
 
-        if(!article){
-            return res.status(404).json({message: 'Artykuł nie znaleziony!'});
+        if (!article) {
+            return res.status(404).json({ message: 'Artykuł nie znaleziony!' });
         }
         res.json(article)
-    } catch(err){
-        res.status(500).json({message: 'Internal server error!'});
+    } catch (err) {
+        res.status(500).json({ message: 'Internal server error!' });
     }
 })
-  
-app.get('/', (req,res) => {
-    res.sendFile('./views/index.html', {root: __dirname});
+
+app.get('/', (req, res) => {
+    res.sendFile('./views/index.html', { root: __dirname });
 })
-app.get('/article', (req,res) => {
-    res.sendFile('./views/article.html', {root: __dirname});
+app.get('/article', (req, res) => {
+    res.sendFile('./views/article.html', { root: __dirname });
 })
 app.get('/adminLogin', (req, res) => {
-    res.sendFile('./views/admin/adminLogin.html', {root: __dirname});
+    res.sendFile('./views/admin/adminLogin.html', { root: __dirname });
 })
-app.get('/adminPanel', isAdminAuthenticated, (req,res) => {
-    res.sendFile('./views/admin/adminPanel.html', {root: __dirname});
+app.get('/adminPanel', isAdminAuthenticated, (req, res) => {
+    res.sendFile('./views/admin/adminPanel.html', { root: __dirname });
 })
 app.use((req, res) => {
-    res.sendFile('./views/404.html', { root: __dirname}); //404 page
+    res.sendFile('./views/404.html', { root: __dirname }); //404 page
 })
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
-  });
+});

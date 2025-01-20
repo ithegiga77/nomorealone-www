@@ -4,7 +4,7 @@
   "description": "Oliwier Krypczyk 18.01.2025: soon powstanie struktura",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,9 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "mongoose": "^8.9.5",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.9"
   }
 }
