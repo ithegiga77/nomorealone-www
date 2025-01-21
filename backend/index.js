@@ -19,6 +19,15 @@ import Admin from './models/Admin.js';
 import Article from './models/Article.js';
 
 
+const removePolishChars = (str) => {
+    const polishChars = {
+        'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o',
+        'ś': 's', 'ż': 'z', 'ź': 'z', 'Ą': 'A', 'Ć': 'C', 'Ę': 'E',
+        'Ł': 'L', 'Ń': 'N', 'Ó': 'O', 'Ś': 'S', 'Ż': 'Z', 'Ź': 'Z'
+    };
+    return str.split('').map(char => polishChars[char] || char).join('');
+};
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let articleTitle = req.body.articleTitle;
@@ -27,9 +36,11 @@ const storage = multer.diskStorage({
             return cb(new Error("Title is required"), null);
         }
 
+        articleTitle = removePolishChars(articleTitle);
+
         articleTitle = articleTitle.replace(/\s+/g, '_');
 
-        const articleFolder = path.join(__dirname, 'public/articlesImg', articleTitle);
+        const articleFolder = path.join(__dirname, 'public', 'articlesImg', articleTitle);
 
         if (!fs.existsSync(articleFolder)) {
             fs.mkdirSync(articleFolder, { recursive: true });
@@ -43,6 +54,9 @@ const storage = multer.diskStorage({
         cb(null, `${fileId}${ext}`);
     }
 });
+
+export default multer({ storage: storage });
+
 
 app.use(session({
     secret: process.env.SESSION_SECRET || randomBytes(64).toString('hex'),
