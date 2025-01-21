@@ -3,6 +3,8 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import 'dotenv/config'
 import bcrypt from 'bcrypt';
+import multer from 'multer';
+import fs from 'fs';
 import { randomBytes } from 'node:crypto';
 
 import path from 'path';
@@ -16,6 +18,31 @@ const port = 3001; //Set this port to whatever you like, it doesn't have to be t
 import Admin from './models/Admin.js';
 import Article from './models/Article.js';
 
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        let articleTitle = req.body.articleTitle;
+
+        if (!articleTitle) {
+            return cb(new Error("Title is required"), null);
+        }
+
+        articleTitle = articleTitle.replace(/\s+/g, '_');
+
+        const articleFolder = path.join(__dirname, 'public/articlesImg', articleTitle);
+
+        if (!fs.existsSync(articleFolder)) {
+            fs.mkdirSync(articleFolder, { recursive: true });
+        }
+
+        cb(null, articleFolder);
+    },
+    filename: (req, file, cb) => {
+        const fileId = Date.now();
+        const ext = path.extname(file.originalname);
+        cb(null, `${fileId}${ext}`);
+    }
+});
 
 app.use(session({
     secret: process.env.SESSION_SECRET || randomBytes(64).toString('hex'),
@@ -70,22 +97,46 @@ app.post("/adminLogin", async (req, res) => {
     }
 });
 
-app.post("/createArticle", async (req, res) => {
+const upload = multer({ storage: storage });
+
+app.post("/createArticle", upload.array('images'), async (req, res) => {
     const { articleTitle, articleDescription } = req.body;
 
     try {
-        const newArticle = new Article({
-            title: articleTitle,
-            description: articleDescription,
-            image: 'none'
-        })
 
-        await newArticle.save();
-        return newArticle;
+
+        if (req.files && req.files.length > 0) {
+
+            const uploadedFiles = req.files.map(file => path.join('articlesImg', articleTitle.replace(/\s+/g, '_'), file.filename));
+
+            const newArticle = new Article({
+                title: articleTitle,
+                description: articleDescription,
+                images: uploadedFiles 
+            });
+
+            await newArticle.save();
+
+            return res.send(`Zdjęcia zostały zapisane: ${uploadedFiles.join(', ')}`);
+        } else {
+            const newArticle = new Article({
+                title: articleTitle,
+                description: articleDescription,
+                images: 'none',
+            });
+
+            await newArticle.save();
+
+            return res.send(`Artykul zapisany`);
+        }
     } catch (err) {
+        // Handle errors
         console.error('Error', err);
+        return res.status(500).send('Błąd serwera');
     }
-})
+});
+
+
 
 app.get("/logout", (req, res) => {
     if (!req.session || !req.session.admin) {

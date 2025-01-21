@@ -14,10 +14,10 @@ const articleSchema = new mongoose.Schema({
         trim: false
     },
     images: {
-        type: String,
+        type: [String],
         required: false,
         unique: false,
-        trim: true,
+        trim: false,
     }
 })
 
