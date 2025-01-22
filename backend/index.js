@@ -5,7 +5,7 @@ import 'dotenv/config'
 import bcrypt from 'bcrypt';
 import multer from 'multer';
 import fs from 'fs';
-import { randomBytes } from 'node:crypto';
+import { randomBytes } from 'crypto';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,7 +17,6 @@ const port = 3001; //Set this port to whatever you like, it doesn't have to be t
 
 import Admin from './models/Admin.js';
 import Article from './models/Article.js';
-
 
 const removePolishChars = (str) => {
     const polishChars = {
@@ -37,9 +36,7 @@ const storage = multer.diskStorage({
         }
 
         articleTitle = removePolishChars(articleTitle);
-
         articleTitle = articleTitle.replace(/\s+/g, '_');
-
         const articleFolder = path.join(__dirname, 'public', 'articlesImg', articleTitle);
 
         if (!fs.existsSync(articleFolder)) {
@@ -56,8 +53,7 @@ const storage = multer.diskStorage({
 });
 
 export default multer({ storage: storage });
-
-
+const upload = multer({ storage: storage });
 app.use(session({
     secret: process.env.SESSION_SECRET || randomBytes(64).toString('hex'),
     resave: false,
@@ -68,6 +64,7 @@ app.use(session({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/static', express.static(path.join(__dirname, 'public')))
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MONGODB'))
@@ -84,17 +81,13 @@ function isAdminAuthenticated(req, res, next) {
 app.post("/adminLogin", async (req, res) => {
     try {
         const { login, password } = req.body;
-
         if (!login || !password) {
             return res.status(400).json({ message: "Incorrect data!" });
         }
-
         const admin = await Admin.findOne({ login });
-
         if (!admin) {
             return res.status(400).json({ message: "Incorrect login!" });
         }
-
         const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password!" });
@@ -111,13 +104,15 @@ app.post("/adminLogin", async (req, res) => {
     }
 });
 
-const upload = multer({ storage: storage });
-
 app.post("/createArticle", upload.array('images'), async (req, res) => {
     const { articleTitle, articleDescription } = req.body;
 
     try {
 
+        const existingArticle = await Article.findOne({ title: articleTitle });
+        if (existingArticle) {
+            return res.status(400).send("Artykuł z tym tytułem już istnieje.");
+        }
 
         if (req.files && req.files.length > 0) {
 
@@ -150,13 +145,10 @@ app.post("/createArticle", upload.array('images'), async (req, res) => {
     }
 });
 
-
-
 app.get("/logout", (req, res) => {
     if (!req.session || !req.session.admin) {
         return res.status(200).json({ message: "You are not logged!" });
     }
-
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({ message: "Error occured while logging out!" });
@@ -169,7 +161,6 @@ app.get("/api/adminData", (req, res) => {
     if (!req.session || !req.session.admin) {
         return res.status(401).json({ message: "Forbidden" });
     }
-
     res.json(req.session.admin);
 });
 
@@ -189,10 +180,8 @@ app.get("/api/loadArticles", async (req, res) => {
 });
 app.get("/api/getArticle/:id", async (req, res) => {
     const articleId = req.params.id;
-
     try {
         const article = await Article.findById(articleId);
-
         if (!article) {
             return res.status(404).json({ message: 'Artykuł nie znaleziony!' });
         }
@@ -205,9 +194,6 @@ app.get("/api/getArticle/:id", async (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile('./views/index.html', { root: __dirname });
 })
-
-app.use('/static', express.static(path.join(__dirname, 'public')))
-
 app.get('/article', (req, res) => {
     res.sendFile('./views/article.html', { root: __dirname });
 })
