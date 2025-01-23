@@ -5,3 +5,7 @@
 .toggle_theme {
     transition: all 300ms ease-in-out;
 }
+
+.auto_height {
+    interpolate-size: allow-keywords;
+}

@@ -1,45 +1,71 @@
 import { Route, Routes } from "react-router-dom";
 import Footer from "./Components/Footer/Footer";
 import Header from "./Components/Header/Header";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import Loading from "./Components/Loading/Loading";
+import { GlobalContextInterface } from "./typings";
+import { Language, Theme } from "./typings/enums";
 
-export enum Theme {
-    light = "Light",
-    dark = "Dark",
-}
+export const GlobalContext = createContext<GlobalContextInterface>(
+    {} as GlobalContextInterface
+);
 
 function App() {
-    const [theme, setTheme] = useState<Theme>(() => {
-        const currentTheme = localStorage.getItem("theme");
-        if (currentTheme === Theme.light || currentTheme === Theme.dark)
-            return currentTheme;
-        return Theme.light;
-    });
+    const [language, setLanguage] = useState<Language>();
+    const [theme, setTheme] = useState<Theme>();
 
-    const toggleTheme = () => {
-        setTheme((prev) => (prev === Theme.light ? Theme.dark : Theme.light));
+    const getTheme = () => {
+        const currentTheme = localStorage.getItem("theme");
+        if (currentTheme === Theme.light || currentTheme === Theme.dark) {
+            setTheme(currentTheme);
+            if (currentTheme === Theme.dark) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        } else {
+            setTheme(Theme.light);
+            localStorage.setItem("theme", Theme.light);
+        }
+    };
+
+    const getLanguage = () => {
+        const currentLanguage = localStorage.getItem("language");
+        if (
+            currentLanguage === Language.pl ||
+            currentLanguage === Language.ua
+        ) {
+            setLanguage(currentLanguage);
+        } else {
+            setLanguage(Language.pl);
+            localStorage.setItem("language", Language.pl);
+        }
     };
 
     useEffect(() => {
-        localStorage.setItem("theme", theme);
-        if (theme === Theme.dark) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    }, [theme]);
+        getTheme();
+        getLanguage();
+    }, []);
+
+    if (!theme || !language) {
+        return <Loading />;
+    }
 
     return (
         <div className="flex-1 w-full flex flex-col justify-between">
-            <Header theme={theme} toggleTheme={toggleTheme} />
-            <Routes>
-                <Route path="/" element={<></>} />
-                <Route path="/articles" element={<></>} />
-                <Route path="/articles/:articleId" element={<></>} />
-                <Route path="/about" element={<></>} />
-                <Route path="/contact" element={<></>} />
-                <Route path="*" element={<>404</>} />
-            </Routes>
+            <GlobalContext.Provider
+                value={{ theme, setTheme, language, setLanguage }}
+            >
+                <Header />
+                <Routes>
+                    <Route path="/" element={<></>} />
+                    <Route path="/articles" element={<></>} />
+                    <Route path="/articles/:articleId" element={<></>} />
+                    <Route path="/about" element={<></>} />
+                    <Route path="/contact" element={<></>} />
+                    <Route path="*" element={<>404</>} />
+                </Routes>
+            </GlobalContext.Provider>
             <Footer />
         </div>
     );
