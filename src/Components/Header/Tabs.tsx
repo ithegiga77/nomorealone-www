@@ -32,9 +32,8 @@ const Tabs = () => {
                     width="28"
                     height="28"
                     viewBox="0 0 1024 1024"
-                    className={`transition-transform duration-300 ease-in-out ${
-                        isOpen ? "" : "rotate-90"
-                    }`}
+                    className={`transition-transform duration-300 ease-in-out ${isOpen ? "" : "rotate-90"
+                        }`}
                 >
                     <path
                         fill="currentColor"
@@ -43,18 +42,17 @@ const Tabs = () => {
                 </svg>
             </div>
             <div
-                className={`auto_height flex flex-col lg:flex-row lg:items-center lg:gap-7 transition-all duration-200 ease-in-out overflow-hidden ${
-                    isOpen
-                        ? "max-lg:h-auto max-lg:opacity-100"
-                        : "max-lg:h-0 max-lg:opacity-0"
-                }`}
+                className={`auto_height flex flex-col lg:flex-row lg:items-center lg:gap-7 transition-all duration-200 ease-in-out overflow-hidden ${isOpen
+                    ? "max-lg:h-auto max-lg:opacity-100"
+                    : "max-lg:h-0 max-lg:opacity-0"
+                    }`}
             >
                 {tabs.map((tab) => (
                     <Link
                         to={`/${tab.route}`}
                         key={`header-tab-${tab.route}`}
                         onClick={() => setIsOpen(false)}
-                        className={`flex justify-center items-center py-3 lg:py-0 border-t-[1px] border-slate-300 lg:border-none font-light text-xl text-black dark:text-white hover:bg-slate-300 dark:hover:bg-[#2e2e31] lg:hover:bg-inherit lg:hover:-translate-y-[2px] transition-all duration-200 ease-in-out`}
+                        className={`flex justify-center items-center py-3 lg:py-0 border-t-[1px] border-slate-300 lg:border-none text-xl text-gray-950  dark:text-white hover:bg-slate-300 dark:hover:bg-[#2e2e31] lg:hover:bg-inherit lg:hover:-translate-y-[2px] transition-all duration-200 ease-in-out`}
                     >
                         {tab.name}
                     </Link>
