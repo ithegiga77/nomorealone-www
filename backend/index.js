@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import multer from 'multer';
 import fs from 'fs';
 import { randomBytes } from 'crypto';
+import jwt from 'jsonwebtoken';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -62,6 +63,11 @@ app.use(session({
     httpOnly: true
 }));
 
+if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET is not defined!");
+    process.exit(1);
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/static', express.static(path.join(__dirname, 'public')))
@@ -71,7 +77,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch(err => console.error('An error has been occured while connecting to DB: ', err));
 
 function isAdminAuthenticated(req, res, next) {
-    if (req.session.admin) {
+    if (jwt.verify(req.body.token, process.env.JWT_SECRET)) {
         return next();
     }
     res.redirect('/adminLogin');
@@ -92,23 +98,27 @@ app.post("/adminLogin", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password!" });
         }
-        req.session.admin = {
-            login: admin.login,
-            name: admin.name,
-            surname: admin.surname
-        };
-        res.status(200).json({ message: "Logged in" });
+        const TOKEN = jwt.sign({ login: admin.login, name: admin.name, surname: admin.surname }, process.env.JWT_SECRET, {
+            expiresIn: '5h'
+        });
+        res.status(200).json({ message: "Logged in", token: TOKEN });
     } catch (err) {
         console.error("Error Admin Login:", err);
         res.status(500).json({ message: "Internal server error!" });
     }
 });
 
-app.post("/createArticle", upload.array('images'), async (req, res) => {
-    if (!req.session || !req.session.admin) {
+app.post("/verifyToken", (req, res) => {
+    if (!req.body.token || !jwt.verify(req.body.token, process.env.JWT_SECRET)) {
         return res.status(401).json({ message: "Forbidden" });
     }
+    res.status(200).json({ message: "Token is valid" });
+})
 
+app.post("/createArticle", upload.array('images'), async (req, res) => {
+    if (!req.body.token || !jwt.verify(req.body.token, process.env.JWT_SECRET)) {
+        return res.status(401).json({ message: "Forbidden" });
+    }
     const { articleTitle, articleDescription } = req.body;
 
     try {
@@ -149,9 +159,9 @@ app.post("/createArticle", upload.array('images'), async (req, res) => {
     }
 });
 
-app.get("/logout", (req, res) => {
-    if (!req.session || !req.session.admin) {
-        return res.status(200).json({ message: "You are not logged!" });
+app.post("/logout", (req, res) => {
+    if (!req.body.token || !jwt.verify(req.body.token, process.env.JWT_SECRET)) {
+        return res.status(200).json({ message: "You are not logged in!" });
     }
     req.session.destroy((err) => {
         if (err) {
@@ -161,11 +171,12 @@ app.get("/logout", (req, res) => {
     });
 });
 
-app.get("/api/adminData", (req, res) => {
-    if (!req.session || !req.session.admin) {
+app.post("/api/adminData", (req, res) => {
+    if (!req.body.token || !jwt.verify(req.body.token, process.env.JWT_SECRET)) {
         return res.status(401).json({ message: "Forbidden" });
     }
-    res.json(req.session.admin);
+    const DATA = jwt.decode(req.body.token);
+    res.json(DATA);
 });
 
 app.get("/api/loadArticles", async (req, res) => {

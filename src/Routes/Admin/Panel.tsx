@@ -1,19 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Panel = () => {
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
 
     useEffect(() => {
-        const response = fetch('http://localhost:3001/api/adminData', {
-            method: 'GET',
+        fetch('http://localhost:3001/verifyToken', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
+            },
+            body: JSON.stringify({ token: localStorage.getItem('token') })
+        }).then(response => {
+            if (!response.ok) {
+                window.location.href = '/admin/login';
             }
-        }).then(response => response.json())
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        }).catch((error) => {
+            console.error('Error:', error);
+        });
 
+        fetch('http://localhost:3001/api/adminData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                token: localStorage.getItem('token')
+            })
+        }).then(response => response.json()).then(data => {
+            setName(data.name);
+            setSurname(data.surname);
+        }).catch((error) => { console.error('Error:', error); });
     }, []);
 
     return (
@@ -23,9 +42,8 @@ const Panel = () => {
             <div className="flex">
                 <div id="adminInfo" className="dark:text-white text-2xl rounded-3xl shadow-[0px_5px_3px_-3px_rgba(0,0,0,0.3)] p-10 toggle_theme h-fit">
                     <h4>Dane administratora</h4>
-                    <p id="adminName">Imie: xxx</p>
-                    <p id="adminSurname">Nazwisko: xxx</p>
-                    <p id="adminLogin">Login: xxx</p>
+                    <p>Imie: {name}</p>
+                    <p>Nazwisko: {surname}</p>
                 </div>
                 <div id="createArticle" className="dark:text-white text-2xl rounded-3xl shadow-[0px_5px_3px_-3px_rgba(0,0,0,0.3)] p-10 toggle_theme">
                     <form method="POST" action="/createArticle" encType="multipart/form-data">

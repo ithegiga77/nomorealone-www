@@ -20,6 +20,8 @@ const Login = () => {
             body: JSON.stringify({ login, password })
         }).then(async res => {
             if (res.ok) {
+                const TOKEN = await res.json().then((data) => data.token);
+                localStorage.setItem("token", TOKEN);
                 window.location.href = "/admin/panel";
             } else {
                 setErrorMessage(await res.json().then((data) => data.message));
