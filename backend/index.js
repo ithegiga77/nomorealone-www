@@ -97,7 +97,7 @@ app.post("/adminLogin", async (req, res) => {
             name: admin.name,
             surname: admin.surname
         };
-        res.redirect('/adminPanel');
+        res.status(200).json({ message: "Logged in" });
     } catch (err) {
         console.error("Error Admin Login:", err);
         res.status(500).json({ message: "Internal server error!" });
@@ -105,6 +105,10 @@ app.post("/adminLogin", async (req, res) => {
 });
 
 app.post("/createArticle", upload.array('images'), async (req, res) => {
+    if (!req.session || !req.session.admin) {
+        return res.status(401).json({ message: "Forbidden" });
+    }
+
     const { articleTitle, articleDescription } = req.body;
 
     try {
@@ -121,7 +125,7 @@ app.post("/createArticle", upload.array('images'), async (req, res) => {
             const newArticle = new Article({
                 title: articleTitle,
                 description: articleDescription,
-                images: uploadedFiles 
+                images: uploadedFiles
             });
 
             await newArticle.save();

@@ -5,8 +5,9 @@ import { createContext, useEffect, useState } from "react";
 import Loading from "./Components/Loading/Loading";
 import { GlobalContextInterface } from "./typings";
 import { Language, Theme } from "./typings/enums";
-import ArticleCard from "./Components/ArticleCard/ArticleCard";
-import Index from "./Routes/Index";
+import Index from "./Routes/Index/Index";
+import Login from "./Routes/Admin/Login";
+import Panel from "./Routes/Admin/Panel";
 
 export const GlobalContext = createContext<GlobalContextInterface>(
     {} as GlobalContextInterface
@@ -65,6 +66,8 @@ function App() {
                     <Route path="/articles/:articleId" element={<></>} />
                     <Route path="/about" element={<></>} />
                     <Route path="/contact" element={<></>} />
+                    <Route path="/admin/login" element={<Login />} />
+                    <Route path="/admin/panel" element={<Panel />} />
                     <Route path="*" element={<>404</>} />
                 </Routes>
             </GlobalContext.Provider>
