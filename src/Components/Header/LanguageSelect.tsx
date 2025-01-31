@@ -1,15 +1,11 @@
-import { SetStateAction, useContext } from "react";
+import { useContext, useState } from "react";
 import pl from "./../../assets/pl.jpg";
 import ua from "./../../assets/ua.jpg";
 import { GlobalContext } from "../../App";
 import { Language } from "../../typings/enums";
 
-interface Props {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<SetStateAction<boolean>>;
-}
-
-const LanguageSelect = ({ isOpen, setIsOpen }: Props) => {
+const LanguageSelect = () => {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const { language, setLanguage } = useContext(GlobalContext);
     const toggleLanguage = (key: Language) => {
         setLanguage(key);
