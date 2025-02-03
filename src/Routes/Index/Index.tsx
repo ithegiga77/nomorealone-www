@@ -4,18 +4,18 @@ import ArticleCard from "../../Components/ArticleCard/ArticleCard";
 const Index = () => {
     const [articles, setArticles] = useState([]);
 
-    // useEffect(() => {
-    //     fetch('http://localhost:3001/api/loadArticles', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Accept': 'application/json'
-    //         }
-    //     }).then(response => response.json()).then(data => {
-    //         setArticles(data[0]);
-    //         console.log(data[0])
-    //     }).catch((error) => { console.error('Error:', error); });
-    // }, []);
+    useEffect(() => {
+        fetch('http://localhost:3001/api/loadArticles', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).then(response => response.json()).then(data => {
+            setArticles(data[0]);
+            console.log(data[0])
+        }).catch((error) => { console.error('Error:', error); });
+    }, []);
 
     return (
         <>

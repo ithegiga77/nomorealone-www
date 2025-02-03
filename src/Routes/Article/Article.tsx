@@ -16,9 +16,9 @@ const Article = () => {
     }, []);
     return (
         <div>
-            {article ? <div className="py-5 px-3">
+            {article ? <div className="py-5 px-3 w-[90vw] min-h-[90vh]">
                 <div className="bg-cover bg-center bg-no-repeat px-5 py-24 rounded-3xl my-5" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url('http://localhost:3001/static/" + article.images[0].replaceAll('\\', '/') + "')" }}><h1 className="text-white font-semibold text-3xl">{article.title}</h1></div>
-                <p>{article.description}</p>
+                <p className="dark:text-white toggle_theme">{article.description}</p>
             </div>
                 : <p>Loading...</p>}
         </div>

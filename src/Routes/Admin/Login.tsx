@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Components/Loading/Loading";
 
@@ -12,6 +12,21 @@ interface LoginData {
 const Login = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
+
+    const auth = useMutation({
+        mutationFn: () =>
+            axios.post(`http://localhost:3001/verifyToken`, {
+                token: localStorage.getItem("token"),
+            }).then((res) => {
+                if (res.status === 200) {
+                    navigate("/admin/panel");
+                }
+            }),
+        onError: () => {
+            localStorage.removeItem("token");
+            navigate("/admin/login");
+        },
+    });
 
     const mutation = useMutation({
         mutationFn: ({ login, password }: LoginData) =>
@@ -31,6 +46,10 @@ const Login = () => {
         },
     });
 
+    useEffect(() => {
+        auth.mutate();
+    }, []);
+
     function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
         const form = e.currentTarget;
@@ -43,7 +62,7 @@ const Login = () => {
         mutation.mutate({ login, password });
     }
 
-    if (mutation.isPending) {
+    if (mutation.isPending || auth.isPending) {
         return <Loading />;
     }
 
