@@ -56,7 +56,7 @@ function App() {
     }
 
     return (
-        <div className="flex-1 w-full flex flex-col">
+        <div className="flex-1 w-full flex flex-col justify-between items-center">
             <GlobalContext.Provider
                 value={{ theme, setTheme, language, setLanguage }}
             >

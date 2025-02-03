@@ -1,8 +1,8 @@
-body{
+body {
     background-color: rgb(36, 36, 36);
     color: white;
 }
-#adminInfo{
+#adminInfo {
     max-width: 300px;
     background-color: black;
     padding: 15px;

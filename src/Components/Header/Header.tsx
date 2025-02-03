@@ -28,7 +28,7 @@ const Header = () => {
 
     return (
         <div className="flex flex-col mt-3 w-full bg-white dark:bg-[#18181a] text-gray-950 dark:text-white rounded-3xl shadow-[0px_5px_8px_2px_rgba(0,0,0,0.3)] toggle_theme overflow-hidden">
-            <div className="flex justify-between flex-wrap relative">
+            <div className="flex justify-between sm:gap-7 flex-wrap relative">
                 <div
                     onClick={handleTitlteClick}
                     className="max-sm:flex-1 max-sm:py-2 p-4 lg:p-6 cursor-pointer flex justify-center items-center"
@@ -38,7 +38,7 @@ const Header = () => {
                     </span>
                 </div>
                 <Tabs />
-                <div className="max-sm:py-2 flex-1 flex gap-7 p-4 lg:p-6 justify-center">
+                <div className="max-sm:py-2 max-sm:flex-1 flex gap-7 p-4 lg:p-6 justify-center">
                     <LanguageSelect />
                     <ThemeSwitch />
                     <PhoneMenuSwitch isOpen={isOpen} setIsOpen={setIsOpen} />
