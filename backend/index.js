@@ -235,7 +235,7 @@ app.post("/api/adminData", (req, res) => {
 
 app.get("/api/loadArticles", async (req, res) => {
     try {
-        const articles = await Article.find();
+        const articles = await Article.find().sort({ createdAt: -1 });
         const groupedArticles = [];
 
         for (let i = 0; i < articles.length; i += 25) {
