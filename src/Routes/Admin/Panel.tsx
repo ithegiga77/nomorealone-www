@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Components/Loading/Loading";
 import NewArticle from "./NewArticle";
+import globalVariables from "../../globalVariables";
 
 const Panel = () => {
     const [name, setName] = useState("");
@@ -13,7 +14,7 @@ const Panel = () => {
 
     const auth = useMutation({
         mutationFn: () =>
-            axios.post(`http://localhost:3001/verifyToken`, {
+            axios.post(`${globalVariables.api_link}/verifyToken`, {
                 token: localStorage.getItem("token"),
             }),
         onError: () => {
@@ -25,7 +26,7 @@ const Panel = () => {
     const adminData = useMutation({
         mutationFn: () =>
             axios
-                .post("http://localhost:3001/api/adminData", {
+                .post(`${globalVariables.api_link}/api/adminData`, {
                     token: localStorage.getItem("token"),
                 })
                 .then((res) => res.data),

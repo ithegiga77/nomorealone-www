@@ -1,5 +1,6 @@
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
+import globalVariables from "../../globalVariables";
 
 interface ImageGalleryProps {
     images: string[];
@@ -13,7 +14,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
         <Carousel>
             {images.map((image, index) => (
                 <div key={index}>
-                    <img src={"http://localhost:3001/static/" + image.replaceAll("\\", "/")} />
+                    <img src={`${globalVariables.api_link}/static/` + image.replaceAll("\\", "/")} />
                 </div>
             ))}
         </Carousel>

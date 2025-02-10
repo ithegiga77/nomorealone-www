@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Components/Loading/Loading";
+import globalVariables from "../../globalVariables";
 
 interface LoginData {
     login: string;
@@ -15,7 +16,7 @@ const Login = () => {
 
     const auth = useMutation({
         mutationFn: () =>
-            axios.post(`http://localhost:3001/verifyToken`, {
+            axios.post(`${globalVariables.api_link}/verifyToken`, {
                 token: localStorage.getItem("token"),
             }).then((res) => {
                 if (res.status === 200) {
@@ -31,7 +32,7 @@ const Login = () => {
     const mutation = useMutation({
         mutationFn: ({ login, password }: LoginData) =>
             axios
-                .post(`http://localhost:3001/adminLogin`, { login, password })
+                .post(`${globalVariables.api_link}/adminLogin`, { login, password })
                 .then((res) => res.data),
         onSuccess: (res) => {
             localStorage.setItem("token", res.token);

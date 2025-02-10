@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { SetStateAction, useState } from "react";
+import globalVariables from "../../globalVariables";
 
 interface Props {
     images: File[];
@@ -13,9 +14,9 @@ const NewArticle = ({ images, setImages }: Props) => {
     const createArticle = useMutation({
         mutationFn: (formData: FormData) =>
             axios
-                .post("http://localhost:3001/createArticle", formData)
+                .post(`${globalVariables.api_link}/createArticle`, formData)
                 .then((res) => res.data),
-        onSuccess: () => {},
+        onSuccess: () => { },
         onError: (error: AxiosError<any>) => {
             if (error.response) {
                 setErrorMessage(error.response.data.message);
@@ -101,6 +102,7 @@ const NewArticle = ({ images, setImages }: Props) => {
                                 <span>Zdjęcia</span>
                                 <span>
                                     <button
+                                        type="button"
                                         className="bg-gray-100 dark:bg-[#434347] p-1 rounded-full cursor-pointer text-black"
                                         onClick={() =>
                                             document
@@ -151,6 +153,7 @@ const NewArticle = ({ images, setImages }: Props) => {
                                         className="h-48 object-cover rounded-2xl shadow-[0px_0px_12px_0px_rgba(0,0,0,0.3)]"
                                     />
                                     <button
+                                        type="button"
                                         className="absolute bg-gray-300 rounded-full p-2 cursor-pointer border border-black"
                                         style={{
                                             top: `-18px`,

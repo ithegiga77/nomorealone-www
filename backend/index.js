@@ -95,8 +95,8 @@ if (!process.env.JWT_SECRET) {
     process.exit(1);
 }
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use("/static", express.static(path.join(__dirname, "public")));
 
 mongoose
@@ -153,55 +153,59 @@ app.post("/verifyToken", (req, res) => {
 });
 
 app.post("/createArticle", upload.array("images"), async (req, res) => {
-    if (
-        !req.body.token ||
-        !jwt.verify(req.body.token, process.env.JWT_SECRET)
-    ) {
-        return res.status(401).json({ message: "Forbidden" });
-    }
-    const { articleTitle, articleDescription } = req.body;
-
     try {
-        const existingArticle = await Article.findOne({ title: articleTitle });
-        if (existingArticle) {
-            return res.status(400).send("Artykuł z tym tytułem już istnieje.");
+        if (
+            !req.body.token ||
+            !jwt.verify(req.body.token, process.env.JWT_SECRET)
+        ) {
+            return res.status(401).json({ message: "Forbidden" });
         }
+        const { articleTitle, articleDescription } = req.body;
 
-        if (req.files && req.files.length > 0) {
-            const uploadedFiles = req.files.map((file) =>
-                path.join(
-                    "articlesImg",
-                    articleTitle.replace(/\s+/g, "_"),
-                    file.filename
-                )
-            );
+        try {
+            const existingArticle = await Article.findOne({ title: articleTitle });
+            if (existingArticle) {
+                return res.status(400).send("Artykuł z tym tytułem już istnieje.");
+            }
 
-            const newArticle = new Article({
-                title: articleTitle,
-                description: articleDescription,
-                images: uploadedFiles,
-            });
+            if (req.files && req.files.length > 0) {
+                const uploadedFiles = req.files.map((file) =>
+                    path.join(
+                        "articlesImg",
+                        articleTitle.replace(/\s+/g, "_"),
+                        file.filename
+                    )
+                );
 
-            await newArticle.save();
+                const newArticle = new Article({
+                    title: articleTitle,
+                    description: articleDescription,
+                    images: uploadedFiles,
+                });
 
-            return res.send(
-                `Zdjęcia zostały zapisane: ${uploadedFiles.join(", ")}`
-            );
-        } else {
-            const newArticle = new Article({
-                title: articleTitle,
-                description: articleDescription,
-                images: "none",
-            });
+                await newArticle.save();
 
-            await newArticle.save();
+                return res.send(
+                    `Zdjęcia zostały zapisane: ${uploadedFiles.join(", ")}`
+                );
+            } else {
+                const newArticle = new Article({
+                    title: articleTitle,
+                    description: articleDescription,
+                    images: "none",
+                });
 
-            return res.send(`Artykul zapisany`);
+                await newArticle.save();
+
+                return res.send(`Artykul zapisany`);
+            }
+        } catch (err) {
+            // Handle errors
+            console.error("Error", err);
+            return res.status(500).send("Błąd serwera");
         }
     } catch (err) {
-        // Handle errors
-        console.error("Error", err);
-        return res.status(500).send("Błąd serwera");
+        res.status(500).json({ message: "Internal server error!" });
     }
 });
 

@@ -34,7 +34,7 @@ const Header = () => {
                     className="max-sm:flex-1 max-sm:py-2 p-4 lg:p-6 cursor-pointer flex justify-center items-center"
                 >
                     <span className="text-3xl tracking-wider whitespace-nowrap">
-                        Bez barier
+                        No More Alone
                     </span>
                 </div>
                 <Tabs />
