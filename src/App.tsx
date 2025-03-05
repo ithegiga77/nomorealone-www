@@ -9,6 +9,7 @@ import Index from "./Routes/Index/Index";
 import Login from "./Routes/Admin/Login";
 import Panel from "./Routes/Admin/Panel";
 import Article from "./Routes/Article/Article";
+import Articles from "./Routes/Articles/Articles";
 
 export const GlobalContext = createContext<GlobalContextInterface>(
     {} as GlobalContextInterface
@@ -63,7 +64,7 @@ function App() {
                 <Header />
                 <Routes>
                     <Route path="/" element={<Index />} />
-                    <Route path="/articles" element={<></>} />
+                    <Route path="/articles" element={<Articles />} />
                     <Route path="/article/:articleId" element={<Article />} />
                     <Route path="/about" element={<></>} />
                     <Route path="/contact" element={<></>} />
